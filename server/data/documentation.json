@@ -1,0 +1,19 @@
+{
+  "description": "GX Registry API",
+  "url": "https://github.com/GlobalXplorer/gxregistry",
+  "usage": "Requests must be signed with a Basic Auth token",
+  "format": "Responses are sent as JSON",
+  "resources": [
+    {
+      "/api": {
+        "GET": "web3 connection status"
+      }
+    },
+    {
+      "/api/artifacts": ""
+    },
+    {
+      "/api/archaeologists": ""
+    }
+  ]
+}

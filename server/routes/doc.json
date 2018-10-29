@@ -1,9 +1,0 @@
-{
-  "description": "This is the GX Registry API",
-  "usage": "All requests must be signed with a Basic Auth token. All resources can be found at <host>/api/<resource>",
-  "format": "All responses are sent as JSON",
-  "resources": [
-    "/artifacts",
-    "/archaeologists"
-  ]
-}

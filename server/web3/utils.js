@@ -1,5 +1,9 @@
 const web3 = require('./init');
 
+exports.isConnected = () => {
+  return web3.isConnected();
+}
+
 /* CONTRACTS */
 // const REGISTRY_ABI = require('../../ethereum/build/contracts/Registry');
 // const REGISTRY_ADDRESS = require('../../ethereum/build/config').registry;
