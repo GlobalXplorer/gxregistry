@@ -5,53 +5,67 @@ pragma experimental ABIEncoderV2;
 
 /** @title Registry. */
 contract Registry {
-  address public contractOwner;
-  mapping (address => bool) public contractDelegates;
+  address public creator;
+  mapping (address => bool) public delegates;
 
-  uint public artifactsRegistered = 0;
-  mapping (uint => Artifact) public artifacts;
-  mapping (address => string) public walletHolders;
-
+  // Archaeologists archaeologists
   uint public archaeologistsRegistered = 0;
   address[] public archaeologists;
   mapping (address => bool) public isArchaeologist;
 
-  // Archaeologists archaeologists
+  uint public identificationsCreated = 0;
+  mapping (uint => Identification) public identificationData;
+
+  uint public attributionsCreated = 0;
+  mapping (uint => Attribution) public attributionData;
+
+  uint public locationsCreated = 0;
+  mapping (uint => Location) public locationData;
+
+  uint public artifactsRegistered = 0;
+  uint[4][] public artifacts;
+  mapping (uint => Artifact) public artifactData;
 
   /** @dev Artifact details of the artifact being added.
     * @param timestamp Client unix time of verification.
     * @TBC
     */
   struct Artifact {
-    uint id;
-    uint timestamp; // unix
+    uint uid;
+    Identification identification;
+    Attribution attribution;
+    Location location;
+  }
+
+  /** @dev Identification details of the artifact being added.
+    * @param timestamp Client unix time of verification.
+    * @TBC
+    */
+  struct Identification {
     uint blockTime; // block.timestamp
     string doi;
     string rfid;
-    Verification verification;
-    Tracking tracking;
-    bytes dataHash;
+    string provenance;
     address wallet;
-    string walletHolder;
   }
 
-  /** @dev Verification supports the provenance of the artifact.
+  /** @dev Attribution supports the provenance of the artifact.
     * @param dateFound Date in unix time that the artifact was found.
     * @param archaeologist Address of the archaeologist registering the artifact
     * @TBC
     */
-  struct Verification {
+  struct Attribution {
     uint dateFound;
     address archaeologist;
     address governmentVerifier;
     address owner;
   }
 
-  /** @dev Tracking details the location of the artifact.
+  /** @dev Location details the location of the artifact.
     * @param holder Address of the identity currently holding the artifact.
     * @TBC
     */
-  struct Tracking {
+  struct Location {
     address holder;
     string currentLatitude;
     string currentLongitude;
@@ -59,26 +73,29 @@ contract Registry {
   }
 
   constructor(/* address _delegate*/) public {
-    contractOwner = msg.sender;
-    contractDelegates[msg.sender] = true;
+    creator = msg.sender;
+    delegates[msg.sender] = true;
   }
 
-  modifier onlyContractOwner {
-    require(msg.sender == contractOwner);
+  modifier onlyCreator {
+    require(msg.sender == creator);
     _;
   }
 
   modifier onlyAuthorized(address _address) {
-    require(contractDelegates[_address] == true);
+    require(delegates[_address] == true);
     _;
   }
 
   modifier onlyArchaeologists(address _address) {
-		require(archaeologists[_address] == true);
+		require(isArchaeologist[_address] == true);
 		_;
 	}
 
-  // external
+  // view functions promise not to modify the state
+  // pure functions promise not to read from or modify the state
+
+  // external: visible to other contracts and cannot be called internally
   function addArchaeologist(
     address _address
   ) external onlyAuthorized(msg.sender) returns (uint) {
@@ -87,35 +104,156 @@ contract Registry {
     return archaeologistsRegistered++;
   }
 
-  // public
-  function getArchaeologists() public view returns (address[]) {
+  function createIdentification(
+    string doi,
+    string rfid,
+    string provenance,
+    address wallet
+  ) external onlyArchaeologists(msg.sender) returns (uint) {
+    uint id = identificationsCreated++;
+    identificationData[id] = Identification({
+      blockTime: block.timestamp,
+      doi: doi,
+      rfid: rfid,
+      provenance: provenance,
+      wallet: wallet
+    });
+    return id;
+  }
+
+  function createAttribution(
+    uint dateFound,
+    address governmentVerifier,
+    address owner
+  ) external onlyArchaeologists(msg.sender) returns (uint) {
+    uint id = attributionsCreated++;
+    attributionData[id] = Attribution({
+      dateFound: dateFound,
+      archaeologist: msg.sender,
+      governmentVerifier: governmentVerifier,
+      owner: owner
+    });
+    return id;
+  }
+
+  function createLocation(
+    string currentLatitude,
+    string currentLongitude,
+    string transitStatus
+  ) external onlyArchaeologists(msg.sender) returns (uint) {
+    uint id = locationsCreated++;
+    locationData[id] = Location({
+      holder: msg.sender,
+      currentLatitude: currentLatitude,
+      currentLongitude: currentLongitude,
+      transitStatus: transitStatus
+    });
+    return id;
+  }
+
+  function addArtifact(
+    uint identificationId,
+    uint attributionId,
+    uint locationId
+  ) external onlyArchaeologists(msg.sender) returns (uint) {
+    uint artifactId = artifactsRegistered++;
+    artifactData[artifactId] = Artifact({
+      uid: artifactId,
+      identification: identificationData[identificationId],
+      attribution: attributionData[attributionId],
+      location: locationData[locationId]
+    });
+    artifacts.push([artifactId, identificationId, attributionId, locationId]);
+    return artifactId;
+  }
+
+  function updateArtifactLocation(
+    uint artifactId,
+    address holder,
+    string lat,
+    string lng,
+    string status
+  ) external returns (bool) {
+    require(artifactData[artifactId].attribution.owner == msg.sender);
+    uint locationId = artifacts[artifactId][3];
+    locationData[locationId] = Location({
+      holder: holder,
+      currentLatitude: lat,
+      currentLongitude: lng,
+      transitStatus: status
+    });
+    artifactData[artifactId].location = locationData[locationId];
+    return true;
+  }
+
+  // external view: promises not to modify state
+  function getArchaeologists() external view returns (address[]) {
     return archaeologists;
   }
 
-  // internal
+  function getArchaeologistById(uint id) external view returns (address) {
+    return archaeologists[id];
+  }
 
-  // private
+  function getIdentificationById(uint id) external view returns (
+    uint,
+    string,
+    string,
+    string,
+    address
+  ) {
+    return (
+      identificationData[id].blockTime,
+      identificationData[id].doi,
+      identificationData[id].rfid,
+      identificationData[id].provenance,
+      identificationData[id].wallet
+    );
+  }
 
-  /* function createArtifact(
-    uint timestamp,
-    string doi,
-    string rfid,
-    uint dateFound,
-    address governmentVerifier,
-    address owner,
-    address holder,
-    string currentLatitude,
-    string currentLongitude,
-    string transitStatus,
-    bytes dataHash,
-    address wallet
-    ) public isArchaeologist(msg.sender) returns (uint) {
-		//store this asset's name
-		assetNames.push(name);
+  function getAttributionById(uint id) external view returns (
+    uint,
+    address,
+    address,
+    address
+  ) {
+    return (
+      attributionData[id].dateFound,
+      attributionData[id].archaeologist,
+      attributionData[id].governmentVerifier,
+      attributionData[id].owner
+    );
+  }
 
-		//create the new asset with this name, unique ID, and the owner
-		allAssets[assetCtr] = AssetData({owner: msg.sender});
+  function getLocationById(uint id) external view returns (
+    address,
+    string,
+    string,
+    string
+  ) {
+    return (
+      locationData[id].holder,
+      locationData[id].currentLatitude,
+      locationData[id].currentLongitude,
+      locationData[id].transitStatus
+    );
+  }
 
-        return artifactsRegistered++;
-	} */
+  function getArtifacts() external view returns (uint[4][]) {
+    return artifacts;
+  }
+
+  function getArtifactById(uint id) external view returns (uint[4]) {
+    return artifacts[id];
+  }
+
+  // external pure: promises not to modify or read from state
+
+  // public: visisble to this contract, contracts derived from this contract, and any other contracts
+  function () public payable {}
+
+  // internal: visible to this contract and derived contracts
+
+  // private: visible to this contract only
+
 }
