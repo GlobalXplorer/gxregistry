@@ -43,7 +43,7 @@ contract Registry {
     */
   struct Identification {
     uint blockTimeModified; // block.timestamp
-    uint dateModified;
+    uint dateModified; // unix
     string doi;
     string rfid;
     string provenance;
