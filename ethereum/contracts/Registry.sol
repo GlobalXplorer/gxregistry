@@ -42,7 +42,8 @@ contract Registry {
     * @TBC
     */
   struct Identification {
-    uint blockTime; // block.timestamp
+    uint blockTimeModified; // block.timestamp
+    uint dateModified;
     string doi;
     string rfid;
     string provenance;
@@ -105,6 +106,7 @@ contract Registry {
   }
 
   function createIdentification(
+    uint dateModified,
     string doi,
     string rfid,
     string provenance,
@@ -112,7 +114,8 @@ contract Registry {
   ) external onlyArchaeologists(msg.sender) returns (uint) {
     uint id = identificationsCreated++;
     identificationData[id] = Identification({
-      blockTime: block.timestamp,
+      blockTimeModified: block.timestamp,
+      dateModified: dateModified,
       doi: doi,
       rfid: rfid,
       provenance: provenance,
@@ -169,6 +172,8 @@ contract Registry {
 
   function updateArtifactLocation(
     uint artifactId,
+    uint clientTimestamp,
+    string provenance,
     address holder,
     string lat,
     string lng,
@@ -183,6 +188,7 @@ contract Registry {
       transitStatus: status
     });
     artifactData[artifactId].location = locationData[locationId];
+    updateArtifact(artifactId, clientTimestamp, provenance);
     return true;
   }
 
@@ -197,13 +203,15 @@ contract Registry {
 
   function getIdentificationById(uint id) external view returns (
     uint,
+    uint,
     string,
     string,
     string,
     address
   ) {
     return (
-      identificationData[id].blockTime,
+      identificationData[id].blockTimeModified,
+      identificationData[id].dateModified,
       identificationData[id].doi,
       identificationData[id].rfid,
       identificationData[id].provenance,
@@ -255,5 +263,21 @@ contract Registry {
   // internal: visible to this contract and derived contracts
 
   // private: visible to this contract only
+  function updateArtifact(
+    uint artifactId, uint clientTimestamp, string provenance
+  ) private returns (bool) {
+    uint identificationId = artifacts[artifactId][1];
+    Identification identification = identificationData[identificationId];
+    identificationData[identificationId] = Identification({
+      blockTimeModified: block.timestamp,
+      dateModified: clientTimestamp,
+      doi: identification.doi,
+      rfid: identification.rfid,
+      provenance: provenance,
+      wallet: identification.wallet
+    });
+    artifactData[artifactId].identification = identificationData[identificationId];
+    return true;
+  }
 
 }
