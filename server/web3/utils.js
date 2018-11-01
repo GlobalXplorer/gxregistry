@@ -1,17 +1,56 @@
-const web3 = require('./init');
+const web3 = require('./init'),
+      axios = require('axios');
 
+exports.INFURA_API_URL = (method) =>
+  `https://api.infura.io/v1/jsonrpc/kovan/${method}?token=${process.env.INFURA_API_KEY}`;
+
+exports.getAxiosPromise = (method, url, params=undefined, body=undefined) => {
+  if (method === "GET" | method === "get") {
+    return axios.get(url);
+  } else if (method === "POST" | method === "post") {
+    return axios.post(url, body);
+  } else {
+    throw Error("Invalid method argument");
+  }
+}
+
+exports.axiosHandler = async (promises) => {
+  const results = await Promise.all(promises);
+  return results;
+}
+
+// exports.testInfuraConnection = () => {
+//   const requests = [
+//     getAxiosPromise('get', INFURA_API_URL('eth_accounts'))
+//   ];
+//   const results = axiosHandler(requests);
+//   return results;
+// }
+
+promisify = (fun) => {
+  return new Promise((resolve, reject) => {
+    fun(data=undefined, resolve);
+  })
+}
+
+/* ACCOUNT */
 exports.isConnected = () => {
   return web3.isConnected();
 }
+exports.addresses = web3.currentProvider.addresses;
+exports.balance = (address) => {
+  return new Promise((resolve, reject) => {
+    web3.eth.getBalance(address, (err, data) => {
+      if (err !== null) reject(err);
+      else resolve(data);
+    });
+  });
+}
 
 /* CONTRACTS */
-// const REGISTRY_ABI = require('../../ethereum/build/contracts/Registry');
-// const REGISTRY_ADDRESS = require('../../ethereum/build/config').registry;
+exports.REGISTRY_ABI = require('../../ethereum/build/contracts/Registry');
+exports.REGISTRY_ADDRESS = require('../../ethereum/build/config').registryAddress;
 // exports.RegistryContract = new web3.eth.Contract(REGISTRY_ABI, REGISTRY_ADDRESS);
-//
-// const REGISTRARS_ABI = require('../../ethereum/build/contracts/Registars');
-// const REGISTRARS_ADDRESS = require('../../ethereum/build/config').registrars;
-// exports.RegistrarsContract = new web3.eth.Contract(REGISTRARS_ABI, REGISTRARS_ADDRESS);
 
 /* TRANSACTIONS */
 exports.personalSign = (msg) => {

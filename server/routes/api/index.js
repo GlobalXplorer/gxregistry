@@ -3,6 +3,8 @@ const express = require('express');
 
 const APIController = require('../../controllers/api');
 
-router.get('/', [APIController.test]);
+router.get('/', (req, res) => {
+  res.send({"status": "alive"});
+});
 
 module.exports = router;
