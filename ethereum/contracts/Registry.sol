@@ -6,7 +6,7 @@ pragma experimental ABIEncoderV2;
 /** @title Registry. */
 contract Registry {
   address public creator;
-  mapping (address => bool) public delegates;
+  mapping (address => bool) public isDelegate;
 
   // Archaeologists archaeologists
   uint public archaeologistsRegistered = 0;
@@ -75,7 +75,7 @@ contract Registry {
 
   constructor(/* address _delegate*/) public {
     creator = msg.sender;
-    delegates[msg.sender] = true;
+    isDelegate[msg.sender] = true;
   }
 
   modifier onlyCreator {
@@ -84,7 +84,7 @@ contract Registry {
   }
 
   modifier onlyAuthorized(address _address) {
-    require(delegates[_address] == true);
+    require(isDelegate[_address] == true);
     _;
   }
 
@@ -97,6 +97,13 @@ contract Registry {
   // pure functions promise not to read from or modify the state
 
   // external: visible to other contracts and cannot be called internally
+  function addDelegate(
+    address _address
+  ) external onlyAuthorized(msg.sender) returns (bool) {
+    isDelegate[_address] = true;
+    return isDelegate[_address];
+  }
+
   function addArchaeologist(
     address _address
   ) external onlyAuthorized(msg.sender) returns (uint) {
@@ -267,7 +274,7 @@ contract Registry {
     uint artifactId, uint clientTimestamp, string provenance
   ) private returns (bool) {
     uint identificationId = artifacts[artifactId][1];
-    Identification identification = identificationData[identificationId];
+    Identification storage identification = identificationData[identificationId];
     identificationData[identificationId] = Identification({
       blockTimeModified: block.timestamp,
       dateModified: clientTimestamp,
