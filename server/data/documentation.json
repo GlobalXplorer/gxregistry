@@ -1,6 +1,6 @@
 {
   "description": "GX Registry API",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "url": "https://github.com/GlobalXplorer/gxregistry",
   "usage": "Requests must be signed with a Basic Auth token",
   "format": "Responses are sent as JSON",
@@ -40,6 +40,11 @@
     {
       "/api/archaeologists/:id": {
         "GET": "Address of an **archaeologist** registered on-chain with uid <id>"
+      }
+    },
+    {
+      "/api/accounts": {
+        "GET": "Map of users to the addresses they control"
       }
     }
   ]
