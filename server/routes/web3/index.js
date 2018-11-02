@@ -12,6 +12,6 @@ router.get('/', (req, res) => {
 router.get('/address', [Web3Controller.addresses]);
 router.get('/address/:id', [Web3Controller.addressById]);
 router.get('/address/:id/balance', [Web3Controller.balance]);
-router.get('/deploy', [Web3Controller.deploy]);
+router.get('/contract', [Web3Controller.contract]);
 
 module.exports = router;

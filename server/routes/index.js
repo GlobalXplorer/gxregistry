@@ -3,6 +3,7 @@ const web3Router = require('./web3');
 const apiRouter = require('./api');
 const artifactsRouter = require('./api/artifacts');
 const archaeologistsRouter = require('./api/archaeologists');
+const identificationsRouter = require('./api/identifications');
 
 module.exports = (app) => {
   app.get('/', (req, res) => {
@@ -12,4 +13,5 @@ module.exports = (app) => {
   app.use('/api', apiRouter);
   app.use('/api/artifacts', artifactsRouter);
   app.use('/api/archaeologists', archaeologistsRouter);
+  app.use('/api/identifications', identificationsRouter);
 }
