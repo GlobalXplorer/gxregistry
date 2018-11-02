@@ -5,15 +5,15 @@
     "dateModified": "CLIENTSIDE",
     "doi": "11.1978.279",
     "rfid": "3074257bf46261c000000191",
-    "provenance": "CLIENTSIDE",
+    "provenance": "05111d5555062da2d5da1c680650235cfb5b43c719c6026306bbb2430ffa106f",
     "wallet": "0x23df565dcc0f065036bc888b4081c02b2c764112",
     "dateFound": 1450587600000,
     "archaeologist": "ONCHAIN",
     "governmentVerifier": "0xf6d4fc07182d9a837636e357d1cfb4c58b290095",
     "owner": "0xf6d4fc07182d9a837636e357d1cfb4c58b290095",
     "holder": "ONCHAIN",
-    "currentLatitude": 328650,
-    "currentLongitude": 3272476,
+    "currentLatitude": "328650",
+    "currentLongitude": "3272476",
     "transitStatus": "stationary"
   },
   "lisht_object_2": {
@@ -29,8 +29,8 @@
     "governmentVerifier": "0xf6d4fc07182d9a837636e357d1cfb4c58b290095",
     "owner": "0xf6d4fc07182d9a837636e357d1cfb4c58b290095",
     "holder": "ONCHAIN",
-    "currentLatitude": 328650,
-    "currentLongitude": 3272476,
+    "currentLatitude": "328650",
+    "currentLongitude": "3272476",
     "transitStatus": "stationary"
   }
 }
