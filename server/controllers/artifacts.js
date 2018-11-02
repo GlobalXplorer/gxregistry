@@ -19,17 +19,26 @@ exports.getById = async (req, res) => {
   const promiseArtifact = web3Utils.promisify(
     contract.getArtifactById, req.params.id
   );
-  const ids = await promiseArtifact;
-  const uid = ids[0];
-  const promiseIdentification = web3Utils.promisify(
-    contract.getIdentificationById, ids[1]
-  );
-  const promiseAttribution = web3Utils.promisify(
-    contract.getAttributionById, ids[2]
-  );
-  const promiseLocation = web3Utils.promisify(
-    contract.getLocationById, ids[3]
-  );
+  const idBigNumbers = await promiseArtifact;
+  const ids = idBigNumbers.map(i => web3Utils.bigNumberToDecimal(i));
+  const promiseIdentification = new Promise((resolve, reject) => {
+    contract.getIdentificationById(ids[1], (err, data) => {
+      if (err !== null) reject(err);
+      else resolve(data);
+    });
+  });
+  const promiseAttribution = new Promise((resolve, reject) => {
+    contract.getAttributionById(ids[2], (err, data) => {
+      if (err !== null) reject(err);
+      else resolve(data);
+    });
+  });
+  const promiseLocation = new Promise((resolve, reject) => {
+    contract.getLocationById(ids[3], (err, data) => {
+      if (err !== null) reject(err);
+      else resolve(data);
+    });
+  });
   const [identification, attribution, location] = await Promise.all([
     promiseIdentification,
     promiseAttribution,
@@ -58,7 +67,7 @@ exports.getById = async (req, res) => {
     transitStatus: location[3]
     // ...data
   }
-  res.send({ artifact });
+  res.send({ ...artifact });
 }
 
 exports.create = async (req, res) => {
@@ -81,9 +90,9 @@ exports.create = async (req, res) => {
     curator: req.body.curator,
     mediaURL: req.body.mediaURL
   }
-  const provenance = crypto.createHmac('sha256')
-    .update(JSON.stringify(data))
-    .digest('base64');
+  const hash = crypto.createHash('sha256');
+  hash.update(JSON.stringify(data));
+  const provenance = hash.digest('hex');
   // Create attribute sets
   const rfidNumber = req.body.rfidNumber;
   const doi = `GX0000.${getInitialsFromName(req.body.archaeologistName) + Date.now().getYear()}.${rfidNumber}`;
