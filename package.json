@@ -4,7 +4,7 @@
   "description": "",
   "main": "server/server.js",
   "scripts": {
-    "prod": "WEB3PROVIDER=kovan nodemon ./server/server.js",
+    "prod": "WEB3PROVIDER=kovan node ./server/server.js",
     "dev": "WEB3PROVIDER=ganache-cli nodemon ./server/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
