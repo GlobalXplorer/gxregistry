@@ -50,6 +50,11 @@ exports.balance = (address) => {
   });
 }
 
+exports.bigNumberToDecimal = (bigNumber) => {
+  const hex = web3.toHex(bigNumber);
+  return web3.toDecimal(hex);
+}
+
 /* CONTRACTS */
 exports.REGISTRY_ABI = require('../../ethereum/build/contracts/Registry.json').abi;
 exports.REGISTRY_ADDRESS = require('../../ethereum/build/config').registryAddress;
