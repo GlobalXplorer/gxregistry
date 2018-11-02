@@ -4,6 +4,15 @@ const web3 = require('./init'),
 exports.INFURA_API_URL = (method) =>
   `https://api.infura.io/v1/jsonrpc/kovan/${method}?token=${process.env.INFURA_API_KEY}`;
 
+exports.promisify = (fun, params=[]) => {
+  return new Promise((resolve, reject) => {
+    fun(...params, (err, data) => {
+      if (err !== null) reject(err);
+      else resolve(data);
+    });
+  });
+}
+
 exports.getAxiosPromise = (method, url, params=undefined, body=undefined) => {
   if (method === "GET" | method === "get") {
     return axios.get(url);
@@ -27,13 +36,7 @@ exports.axiosHandler = async (promises) => {
 //   return results;
 // }
 
-promisify = (fun) => {
-  return new Promise((resolve, reject) => {
-    fun(data=undefined, resolve);
-  })
-}
-
-/* ACCOUNT */
+/* ETH */
 exports.isConnected = () => {
   return web3.isConnected();
 }
@@ -48,9 +51,9 @@ exports.balance = (address) => {
 }
 
 /* CONTRACTS */
-exports.REGISTRY_ABI = require('../../ethereum/build/contracts/Registry');
+exports.REGISTRY_ABI = require('../../ethereum/build/contracts/Registry.json').abi;
 exports.REGISTRY_ADDRESS = require('../../ethereum/build/config').registryAddress;
-// exports.RegistryContract = new web3.eth.Contract(REGISTRY_ABI, REGISTRY_ADDRESS);
+exports.registryInstance = web3.eth.contract(exports.REGISTRY_ABI).at(exports.REGISTRY_ADDRESS);
 
 /* TRANSACTIONS */
 exports.personalSign = (msg) => {
