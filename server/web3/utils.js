@@ -56,8 +56,8 @@ exports.bigNumberToDecimal = (bigNumber) => {
 }
 
 /* CONTRACTS */
-exports.REGISTRY_ABI = require('../../ethereum/build/contracts/Registry.json').abi;
-exports.REGISTRY_ADDRESS = require('../../ethereum/build/config').registryAddress;
+exports.REGISTRY_ABI = require('./contracts/Registry.json').abi;
+exports.REGISTRY_ADDRESS = require('./config').registryAddress;
 exports.registryInstance = web3.eth.contract(exports.REGISTRY_ABI).at(exports.REGISTRY_ADDRESS);
 
 /* TRANSACTIONS */
