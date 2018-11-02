@@ -1,10 +1,9 @@
 // web3 controller
 
-const web3Utils = require('../web3/utils'),
-      web3Deploy = require('../web3/deploy');
+const web3Utils = require('../web3/utils');
 
 exports.addresses = (req, res) => {
-  res.send({ "account addresses": web3Utils.addresses });
+  res.send({ "account_addresses": web3Utils.addresses });
 }
 
 exports.addressById = (req, res) => {
@@ -19,6 +18,6 @@ exports.balance = async (req, res) => {
   res.send({ address, balance });
 }
 
-exports.deploy = (req, res) => {
-  res.send({ "contract address": web3Deploy() });
+exports.contract = (req, res) => {
+  res.send({ "contract_address": web3Utils.REGISTRY_ADDRESS });
 }
