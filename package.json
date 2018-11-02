@@ -2,10 +2,10 @@
   "name": "gxregistry-server",
   "version": "0.0.1",
   "description": "",
-  "main": "server.js",
+  "main": "server/server.js",
   "scripts": {
-    "prod": "WEB3PROVIDER=kovan nodemon server.js",
-    "dev": "WEB3PROVIDER=ganache-cli nodemon server.js",
+    "prod": "WEB3PROVIDER=kovan node ./server/server.js",
+    "dev": "WEB3PROVIDER=ganache-cli nodemon ./server/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "thevaleriemack",
@@ -20,5 +20,8 @@
     "jsonwebtoken": "^8.3.0",
     "truffle-hdwallet-provider": "0.0.6",
     "web3": "^0.20.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.5"
   }
 }
