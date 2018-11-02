@@ -1,19 +1,46 @@
 {
   "description": "GX Registry API",
+  "version": "0.0.0",
   "url": "https://github.com/GlobalXplorer/gxregistry",
   "usage": "Requests must be signed with a Basic Auth token",
   "format": "Responses are sent as JSON",
   "resources": [
     {
-      "/api": {
-        "GET": "web3 connection status"
+      "/": {
+        "GET": "Documentation"
       }
     },
     {
-      "/api/artifacts": ""
+      "/api": {
+        "GET": "Connection status"
+      }
     },
     {
-      "/api/archaeologists": ""
+      "/api/artifacts": {
+        "GET": "List of artifact uids",
+        "POST": "Authenticated clients who are registered on-chain as **archaeologists** can create new artifacts, storing them on-chain"
+      }
+    },
+    {
+      "/api/artifacts/:id": {
+        "GET": "All on-chain data for the artifact with uid <id>"
+      }
+    },
+    {
+      "/api/artifacts/:id/relocate": {
+        "PUT": "Authenticated clients who are registered on-chain as **owners** of the artifact with uid <id> can update the location data associated with that artifact"
+      }
+    },
+    {
+      "/api/archaeologists": {
+        "GET": "List of addresses belonging to on-chain **archaeologists**",
+        "POST": "Authenticated clients who are registered on-chain as **delegates** can register an archaeologist on-chain by providing their address"
+      }
+    },
+    {
+      "/api/archaeologists/:id": {
+        "GET": "Address of an **archaeologist** registered on-chain with uid <id>"
+      }
     }
   ]
 }
