@@ -20,5 +20,8 @@
     "jsonwebtoken": "^8.3.0",
     "truffle-hdwallet-provider": "0.0.6",
     "web3": "^0.20.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.5"
   }
 }
