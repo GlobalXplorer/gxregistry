@@ -1,3 +1,3 @@
 module.exports = {
-  registryAddress: "0xe16CC23dd878CF5742a96d3165F07C0E813FC500"
+  registryAddress: "0x62ab73f89526d707f96b66a87f8c999cfca3e320"
 };
