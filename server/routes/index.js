@@ -4,6 +4,8 @@ const apiRouter = require('./api');
 const artifactsRouter = require('./api/artifacts');
 const archaeologistsRouter = require('./api/archaeologists');
 const identificationsRouter = require('./api/identifications');
+const attributionsRouter = require('./api/attributions');
+const locationsRouter = require('./api/locations');
 
 module.exports = (app) => {
   app.get('/', (req, res) => {
@@ -14,4 +16,6 @@ module.exports = (app) => {
   app.use('/api/artifacts', artifactsRouter);
   app.use('/api/archaeologists', archaeologistsRouter);
   app.use('/api/identifications', identificationsRouter);
+  app.use('/api/attributions', attributionsRouter);
+  app.use('/api/locations', locationsRouter);
 }

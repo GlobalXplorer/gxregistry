@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "url": "https://github.com/GlobalXplorer/gxregistry",
   "usage": "Requests must be signed with a Basic Auth token",
-  "format": "Responses are sent as JSON",
+  "format": "Responses are sent as JSON. Assume 0 filled responses to be Ethereum's way of saying no content exists, unless otherwise noted.",
   "resources": [
     {
       "/": {
@@ -16,19 +16,8 @@
       }
     },
     {
-      "/api/artifacts": {
-        "GET": "List of artifact uids",
-        "POST": "Authenticated clients who are registered on-chain as **archaeologists** can create new artifacts, storing them on-chain"
-      }
-    },
-    {
-      "/api/artifacts/:id": {
-        "GET": "All on-chain data for the artifact with uid <id>"
-      }
-    },
-    {
-      "/api/artifacts/:id/relocate": {
-        "PUT": "Authenticated clients who are registered on-chain as **owners** of the artifact with uid <id> can update the location data associated with that artifact"
+      "/api/accounts": {
+        "GET": "Map of users to the addresses they control"
       }
     },
     {
@@ -43,8 +32,34 @@
       }
     },
     {
-      "/api/accounts": {
-        "GET": "Map of users to the addresses they control"
+      "/api/artifacts": {
+        "GET": "List of artifact uids",
+        "POST": "Authenticated clients who are registered on-chain as **archaeologists** can create new artifacts, storing them on-chain"
+      }
+    },
+    {
+      "/api/artifacts/:id": {
+        "GET": "All on-chain data for the artifact with uid <id>: uid, identification record, attribution record, and location record"
+      }
+    },
+    {
+      "/api/artifacts/:id/relocate": {
+        "PUT": "Authenticated clients who are registered on-chain as **owners** of the artifact with uid <id> can update the location data associated with that artifact"
+      }
+    },
+    {
+      "/api/identifications/:id": {
+        "GET": "Identification record stored on-chain with id <id>: block time when record was last modified, unix timestamp when record was last modified, doi, rfid, provenance hash, and wallet address of the funder account"
+      }
+    },
+    {
+      "/api/attributions/:id": {
+        "GET": "Attribution record stored on-chain with id <id>: date artifact was found, **archaeologist** address, government verifier address, and artifact owner address"
+      }
+    },
+    {
+      "/api/locations/:id": {
+        "GET": "Location record stored on-chain with id <id> (NOTE: these properties will change): address of custodian currently holding the artifact, current latitude of artifact, current longitude of artifact, and current transit status of artifact"
       }
     }
   ]
